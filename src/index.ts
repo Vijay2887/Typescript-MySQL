@@ -10,8 +10,8 @@ import {
   userLogin,
 } from "./routes/userRoutes";
 import passport from "./strategies/localStrategy";
-import session from "express-session";
 import { isAuthenticated } from "./middlewares/isAuthenticated";
+import { sessionMiddleware } from "./session";
 
 declare global {
   namespace Express {
@@ -25,20 +25,12 @@ declare global {
     }
   }
 }
+
 const app: Application = express();
 
 // setting up some middlewares
 app.use(express.json());
-app.use(
-  session({
-    secret: "My-Session-Secret",
-    saveUninitialized: false,
-    resave: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // one day
-    },
-  })
-);
+app.use(sessionMiddleware);
 
 app.use(passport.initialize());
 app.use(passport.session());
